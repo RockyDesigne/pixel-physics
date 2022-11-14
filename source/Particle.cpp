@@ -17,16 +17,18 @@ void Particle::initVariables()
 	
 	this->vy = 0;
 
+	//set initial pos
+	this->xPos = 0;
+	
+	this->yPos = 0;
+
 	//set random lifetime
 	this->lifeTime = rand() % 1000 + 1;
 }
 
 //constructor
-Particle::Particle(const sf::RenderWindow& window, int x, int y)
-{
-	//set particle position
-	this->shape.setPosition(x, y);
-	
+Particle::Particle(const sf::RenderWindow& window)
+{	
 	this->initShape(window);
 
 	this->initVariables();
@@ -42,6 +44,16 @@ const sf::CircleShape& Particle::getShape() const
 	return this->shape;
 }
 
+void Particle::setXPos(int x)
+{
+	this->xPos = x;
+}
+
+void Particle::setYPos(int y)
+{
+	this->yPos = y;
+}
+
 void Particle::setVy(float vy)
 {
 	this->vy = vy;
@@ -50,6 +62,21 @@ void Particle::setVy(float vy)
 void Particle::setVx(float vx)
 {
 	this->vx = vx;
+}
+
+void Particle::setPos()
+{
+	this->shape.setPosition(this->xPos, this->yPos);
+}
+
+int Particle::getXPos() const
+{
+	return this->xPos;
+}
+
+int Particle::getYPos() const
+{
+	return this->yPos;
 }
 
 //public functions

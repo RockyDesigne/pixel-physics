@@ -76,6 +76,31 @@ void Window::checkParticleCollision()
 				this->particles[i].setVy(static_cast<float>((rand() % 10) - 5));
 			}
 		}
+		//check for collision with window bounds
+		
+		//check left collision
+		if (this->particles[i].getShape().getGlobalBounds().left <= 0.f)
+		{
+			this->particles[i].setVx(static_cast<float>((rand() % 10) - 5));
+		}
+		
+		//check right collision
+		if (this->particles[i].getShape().getGlobalBounds().left + this->particles[i].getShape().getGlobalBounds().width >= this->window->getSize().x)
+		{
+			this->particles[i].setVx(static_cast<float>((rand() % 10) - 5));
+		}
+		
+		//check top collision
+		if (this->particles[i].getShape().getGlobalBounds().top <= 0.f)
+		{
+			this->particles[i].setVy(static_cast<float>((rand() % 10) - 5));
+		}
+
+		//check bottom collision
+		if (this->particles[i].getShape().getGlobalBounds().top + this->particles[i].getShape().getGlobalBounds().height >= this->window->getSize().y)
+		{
+			this->particles[i].setVy(static_cast<float>((rand() % 10) - 5));
+		}
 	}
 }
 
@@ -96,18 +121,28 @@ void Window::addParticles()
 	if (this->particles.size() < 101)
 		for (int i = 0; i < 100; ++i)
 			{
-				this->particles.push_back(Particle(*this->window, rand() % this->videoMode.width + 1, rand() % this->videoMode.height + 1));
+			this->particles.push_back(Particle(*this->window));
+			//set random starting pos
+			this->particles[i].setXPos(static_cast<int>(rand() % static_cast<int>(this->window->getSize().x)));
+			this->particles[i].setYPos(static_cast<int>(rand() % static_cast<int>(this->window->getSize().y)));
+			//set starting pos
+			this->particles[i].setPos();
 			}
 	
 	//while mouse is held down
 	//add particles
-	/*if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		//add delay between particles
 		if (this->particleDelay >= this->particleDelayMax)
 		{
 			//add particle
-			this->particles.push_back(Particle(*this->window, this->mousePosView.x, this->mousePosView.y));
+			this->particles.push_back(Particle(*this->window));
+
+			//set random starting pos
+			this->particles[this->particles.size() - 1].setXPos(static_cast<int>(this->mousePosView.x));
+			this->particles[this->particles.size() - 1].setYPos(static_cast<int>(this->mousePosView.y));
+			this->particles[this->particles.size() - 1].setPos();
 
 			//reset lifetime
 			this->particleDelay = 0.f;
@@ -117,7 +152,7 @@ void Window::addParticles()
 				//increment lifetime
 				this->particleDelay += 3.5f;
 			}
-	}*/
+	}
 }
 
 void Window::updateParticles()
@@ -132,16 +167,20 @@ void Window::updateParticles()
 void Window::deleteParticles()
 {
 	//if particle lifetime is 0, remove particle
-	for (size_t i = 0; i < particles.size(); i++)
+	/*for (auto i : particles)
 	{
-		if (particles[i].getLifeTime() <= 0)
+		if (i.getLifeTime() <= 0)
 		{
-			particles.erase(particles.begin() + i);
-		}
+			particles.pop_back();
+		}*/
 		
 		//if particle is out of bounds, remove particle
-		//TO DO
-	}
+		/*if (particles[i].getShape().getPosition().x < 0 || particles[i].getShape().getPosition().x > this->window->getSize().x ||
+			particles[i].getShape().getPosition().y < 0 || particles[i].getShape().getPosition().y > this->window->getSize().y)
+		{
+			particles.erase(particles.begin() + i);
+		}*/
+	//}
 }
 
 void Window::update()

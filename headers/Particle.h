@@ -14,13 +14,15 @@ private:
 	float lifeTime;
 	float vx;
 	float vy;
+	int xPos;
+	int yPos;
 
 	//private functions
 	void initShape(const sf::RenderWindow& window);
 	void initVariables();
 public:
 	//constructor
-	Particle(const sf::RenderWindow& window, int x = 0, int y = 0);
+	Particle(const sf::RenderWindow& window);
 	
 	//Destructor
 	virtual ~Particle();
@@ -30,10 +32,27 @@ public:
 	
 	//setters
 	
+	//set xpos
+	void setXPos(int x);
+
+	//set ypos
+	void setYPos(int y);
+	
 	//set vy
 	void setVy(float vy);
 	//set vx
 	void setVx(float vx);
+
+	//set x and y initial position
+	void setPos();
+
+	//accesors
+	// 
+	//get xpos
+	int getXPos() const;
+	
+	//get ypos
+	int getYPos() const;
 
 	int getLifeTime() const;
 	
