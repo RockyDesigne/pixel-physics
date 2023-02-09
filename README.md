@@ -14,7 +14,7 @@ To compile and run the program, you will need to:
   - sfml-window-2.dll
 
 ## Screenshot
-![background image](./screenshots/Pixel-Physics 09.02.2023 16_16_20.png)
+![background image](./screenshots/ss.png)
 
 ## Usage
 Clone the repository and run the program to see the particle system in action.
