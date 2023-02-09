@@ -1,65 +1,69 @@
 #pragma once
-#include <iostream>
-#include <vector>
-#include <ctime>
+
+#include <random>
 
 #include <SFML/Graphics.hpp>
 
-class Particle
+class particle final
 {
 
 private:
-	sf::CircleShape shape;
-	
-	float lifeTime;
-	float vx;
-	float vy;
-	int xPos;
-	int yPos;
+	sf::CircleShape shape_;
+
+	std::mt19937 mt_rand_{ std::random_device{}() };
+	std::uniform_int_distribution<int> dist_;
+	int life_time_{};
+	float vx_{};
+	float vy_{};
+	float x_pos_{};
+	float y_pos_{};
 
 	//private functions
-	void initShape(const sf::RenderWindow& window);
-	void initVariables();
+	void init_shape(const sf::RenderWindow& window);
+	void init_variables();
 public:
 	//constructor
-	Particle(const sf::RenderWindow& window);
+	explicit particle(const sf::RenderWindow& window);
 	
 	//Destructor
-	virtual ~Particle();
+	~particle();
 
 	//accessors
-	const sf::CircleShape& getShape() const;
+	const sf::CircleShape& get_shape() const;
 	
 	//setters
+
+	//set dist
+	void set_dist(int min, int max);
 	
 	//set xpos
-	void setXPos(int x);
+	void set_x_pos(float x);
 
 	//set ypos
-	void setYPos(int y);
+	void set_y_pos(float y);
 	
 	//set vy
-	void setVy(float vy);
+	void set_vy(float vy);
 	//set vx
-	void setVx(float vx);
+	void set_vx(float vx);
 
 	//set x and y initial position
-	void setPos();
+	void set_pos();
 
-	//accesors
-	// 
+	//accessors
+
 	//get xpos
-	int getXPos() const;
+	float get_x_pos() const;
 	
 	//get ypos
-	int getYPos() const;
+	float get_y_pos() const;
 
-	int getLifeTime() const;
+	int get_life_time() const;
 	
 	//functions
-	
+
 	void update();
 	
-	void draw(sf::RenderTarget& target);
+	auto draw(sf::RenderTarget& target) const -> void;
 };
 

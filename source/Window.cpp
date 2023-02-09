@@ -1,132 +1,129 @@
 #include "Window.h"
 
 //private functions
-void Window::initVariables()
+void window::init_variables()
 {
-	this->window = nullptr;
-	this->particleDelayMax = 10.f;
-	this->particleDelay = this->particleDelayMax;
-	this->maxParticles = 100;
+	this->window_ = nullptr;
+	this->particle_delay_max_ = 10.f;
+	this->particle_delay_ = this->particle_delay_max_;
+	this->max_particles_ = 100;
 }
 
-void Window::initWindow()
+void window::init_window()
 {
-	this->videoMode.height = 1080;
-	this->videoMode.width = 1920;
-	this->window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Pixel-Physics", sf::Style::Titlebar | sf::Style::Close);
-	this->window->setFramerateLimit(144);
+	this->video_mode_.height = 1080;
+	this->video_mode_.width = 1920;
+	this->window_ = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Pixel-Physics", sf::Style::Titlebar | sf::Style::Close);
+	this->window_->setFramerateLimit(144);
 }
 
 //constructor
-Window::Window()
+window::window()
 {
-	this->initVariables();
-	this->initWindow();
+	this->init_variables();
+	this->init_window();
 }
 
 //destructor
-Window::~Window()
+window::~window()
 {
-	delete this->window;
+	delete this->window_;
 }
 
-const bool Window::running() const
+bool window::running() const
 {
-	return this->window->isOpen();
+	return this->window_->isOpen();
+}
+
+void window::set_dist(const int min, const int max)
+{
+	this->dist_ = std::uniform_int_distribution<int>(min, max);
 }
 
 //public functions
-void Window::pollEvents()
+void window::poll_events()
 {
-	while (this->window->pollEvent(this->ev))
-	{
-		switch (this->ev.type)
+	while (this->window_->pollEvent(this->ev_))
+		switch (this->ev_.type)
 		{
 		case sf::Event::Closed:
-			this->window->close();
+			this->window_->close();
 			break;
 		case sf::Event::KeyPressed:
-			if (this->ev.key.code == sf::Keyboard::Escape)
-			{
-				this->window->close();
-			}
+			if (this->ev_.key.code == sf::Keyboard::Escape)
+				this->window_->close();
 			break;
-		}
 	}
 }
 
-void Window::checkParticleCollision()
+void window::check_particle_collision()
 {
-	for (size_t i = 0; i < this->particles.size(); i++)
+	for (size_t i = 0; i < this->particles_.size(); i++)
 	{
-		//check for collison with mouse
-		if (this->particles[i].getShape().getGlobalBounds().contains(this->mousePosView))
+		//set dist
+		set_dist(-5, 5);
+
+		//check for collision with mouse
+		if (this->particles_[i].get_shape().getGlobalBounds().contains(this->mouse_pos_view_))
 		{
 			//add random vx and vy
-			this->particles[i].setVx(static_cast<float>((rand() % 10) - 5));
-			this->particles[i].setVy(static_cast<float>((rand() % 10) - 5));
+			this->particles_[i].set_vx(static_cast<float>(this->dist_(this->mt_rand_)));
+			this->particles_[i].set_vy(static_cast<float>(this->dist_(this->mt_rand_)));
 		}
 		//check for collision with other particles
-		for (size_t k = 0; k < this->particles.size(); k++)
-		{
-			if (i != k && this->particles[i].getShape().getGlobalBounds().intersects(this->particles[k].getShape().getGlobalBounds()))
+		for (size_t k = 0; k < this->particles_.size(); k++)
+			if (i != k && this->particles_[i].get_shape().getGlobalBounds().intersects(this->particles_[k].get_shape().getGlobalBounds()))
 			{
 				//add random vx and vy
-				this->particles[i].setVx(static_cast<float>((rand() % 10) - 5));
-				this->particles[i].setVy(static_cast<float>((rand() % 10) - 5));
+				this->particles_[i].set_vx(static_cast<float>(this->dist_(this->mt_rand_)));
+				this->particles_[i].set_vy(static_cast<float>(this->dist_(this->mt_rand_)));
 			}
-		}
 		//check for collision with window bounds
 		
 		//check left collision
-		if (this->particles[i].getShape().getGlobalBounds().left <= 0.f)
-		{
-			this->particles[i].setVx(static_cast<float>((rand() % 10) - 5));
-		}
+		if (this->particles_[i].get_shape().getGlobalBounds().left <= 0.f)
+			this->particles_[i].set_vx(static_cast<float>(this->dist_(this->mt_rand_)));
 		
 		//check right collision
-		if (this->particles[i].getShape().getGlobalBounds().left + this->particles[i].getShape().getGlobalBounds().width >= this->window->getSize().x)
-		{
-			this->particles[i].setVx(static_cast<float>((rand() % 10) - 5));
-		}
+		if (this->particles_[i].get_shape().getGlobalBounds().left + this->particles_[i].get_shape().getGlobalBounds().width >= static_cast<float>(this->window_->getSize().x))
+			this->particles_[i].set_vx(static_cast<float>(this->dist_(this->mt_rand_)));
 		
 		//check top collision
-		if (this->particles[i].getShape().getGlobalBounds().top <= 0.f)
-		{
-			this->particles[i].setVy(static_cast<float>((rand() % 10) - 5));
-		}
+		if (this->particles_[i].get_shape().getGlobalBounds().top <= 0.f)
+			this->particles_[i].set_vy(static_cast<float>(this->dist_(this->mt_rand_)));
 
 		//check bottom collision
-		if (this->particles[i].getShape().getGlobalBounds().top + this->particles[i].getShape().getGlobalBounds().height >= this->window->getSize().y)
-		{
-			this->particles[i].setVy(static_cast<float>((rand() % 10) - 5));
-		}
+		if (this->particles_[i].get_shape().getGlobalBounds().top + this->particles_[i].get_shape().getGlobalBounds().height >= static_cast<float>(this->window_->getSize().y))
+			this->particles_[i].set_vy(static_cast<float>(this->dist_(this->mt_rand_)));
 	}
 }
 
-void Window::updateMousePositions()
+void window::update_mouse_positions()
 {
 	//get mouse position relative to window
-	this->mousePosWindow = sf::Mouse::getPosition(*this->window);
-	this->mousePosView = this->window->mapPixelToCoords(this->mousePosWindow);
+	this->mouse_pos_window_ = sf::Mouse::getPosition(*this->window_);
+	this->mouse_pos_view_ = this->window_->mapPixelToCoords(this->mouse_pos_window_);
 	
 	//print mouse position
 	//std::cout << this->mousePosView.x << " " << this->mousePosView.y << "\n";
 }
 
-void Window::addParticles()
+void window::add_particles()
 {
-	//add 10000 particles, each with random positions
-	//check vector size
-	if (this->particles.size() < 101)
+
+	if (this->particles_.size() < 101)
 		for (int i = 0; i < 100; ++i)
 			{
-			this->particles.push_back(Particle(*this->window));
+			particles_.emplace_back(*this->window_);
+
+			//rand dist
+			std::uniform_real_distribution<float> dist(0.0f, 1.0f); // local
+
 			//set random starting pos
-			this->particles[i].setXPos(static_cast<int>(rand() % static_cast<int>(this->window->getSize().x)));
-			this->particles[i].setYPos(static_cast<int>(rand() % static_cast<int>(this->window->getSize().y)));
+			this->particles_[i].set_x_pos(dist(this->mt_rand_) * static_cast<float>(this->window_->getSize().x));
+			this->particles_[i].set_y_pos(dist(this->mt_rand_) * static_cast<float>(this->window_->getSize().y));
 			//set starting pos
-			this->particles[i].setPos();
+			this->particles_[i].set_pos();
 			}
 	
 	//while mouse is held down
@@ -134,37 +131,34 @@ void Window::addParticles()
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		//add delay between particles
-		if (this->particleDelay >= this->particleDelayMax)
+		if (this->particle_delay_ >= this->particle_delay_max_)
 		{
 			//add particle
-			this->particles.push_back(Particle(*this->window));
+			this->particles_.emplace_back(*this->window_);
 
 			//set random starting pos
-			this->particles[this->particles.size() - 1].setXPos(static_cast<int>(this->mousePosView.x));
-			this->particles[this->particles.size() - 1].setYPos(static_cast<int>(this->mousePosView.y));
-			this->particles[this->particles.size() - 1].setPos();
+			this->particles_[this->particles_.size() - 1].set_x_pos(this->mouse_pos_view_.x);
+			this->particles_[this->particles_.size() - 1].set_y_pos(this->mouse_pos_view_.y);
+			this->particles_[this->particles_.size() - 1].set_pos();
 
 			//reset lifetime
-			this->particleDelay = 0.f;
+			this->particle_delay_ = 0.f;
 		}
 		else
-			{
 				//increment lifetime
-				this->particleDelay += 3.5f;
-			}
+				this->particle_delay_ += 3.5f;
 	}
 }
 
-void Window::updateParticles()
+void window::update_particles()
 {
 	//update particles
-	for (size_t i = 0; i < particles.size(); i++)
-	{
-		particles[i].update();
-	}
+	for (auto& particle : particles_)
+		particle.update();
 }
 
-void Window::deleteParticles()
+// TO DO
+void window::delete_particles()
 {
 	//if particle lifetime is 0, remove particle
 	/*for (auto i : particles)
@@ -183,28 +177,28 @@ void Window::deleteParticles()
 	//}
 }
 
-void Window::update()
+void window::update()
 {
-	this->pollEvents();
+	this->poll_events();
 	
-	this->updateMousePositions();
+	this->update_mouse_positions();
 
-	this->addParticles();
+	this->add_particles();
 
-	this->checkParticleCollision();
+	this->check_particle_collision();
 
-	this->updateParticles();
+	this->update_particles();
 
-	this->deleteParticles();
+	this->delete_particles();
 }
 
-void Window::render()
+void window::render() const
 {
-	this->window->clear();
+	this->window_->clear();
 
 	//draw image to window
-	for (auto i : particles)
-		i.draw(*this->window);
+	for (auto &i : particles_)
+		i.draw(*this->window_);
 	
-	this->window->display();
+	this->window_->display();
 }

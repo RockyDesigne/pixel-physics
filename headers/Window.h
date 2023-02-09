@@ -2,63 +2,67 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
+#include <vector>
 
 #include "Particle.h"
 
-class Window
+class window final
 {
 private:
 	
 	//window
-	sf::RenderWindow* window;
-	sf::VideoMode videoMode;
-	sf::Event ev;
+	sf::RenderWindow* window_{};
+	sf::VideoMode video_mode_;
+	sf::Event ev_{};
 
 	//particles
-	std::vector<Particle> particles;
-	float particleDelay;
-	float particleDelayMax;
-	int maxParticles;
+	std::vector<particle> particles_;
+	float particle_delay_{};
+	float particle_delay_max_{};
+	int max_particles_{};
 
 	//mouse positions
-	sf::Vector2i mousePosWindow;
-	sf::Vector2f mousePosView;
+	sf::Vector2i mouse_pos_window_;
+	sf::Vector2f mouse_pos_view_;
+
+	//random dist
+	std::mt19937 mt_rand_{ std::random_device{}() };
+	std::uniform_int_distribution<int> dist_;
 
 	//mouse held
-	bool mouseHeld;
+	//bool mouse_held_{};
 
 	//Private functions
-	void initVariables();
-	void initWindow();
+	void init_variables();
+	void init_window();
 	
 public:
 	//constructor
-	Window();
+	window();
 	
 	//destructor
-	virtual ~Window();
+	~window();
 	
 	//setters
-	const bool running() const;
+	bool running() const;
 
 	//functions
-	void pollEvents();
+	void set_dist(int min, int max);
+
+	void poll_events();
 	
-	void checkParticleCollision();
+	void check_particle_collision();
 
-	void updateParticles();
+	void update_particles();
 
-	void updateMousePositions();
+	void update_mouse_positions();
 
-	void addParticles();
+	void add_particles();
 
-	void deleteParticles();
+	static void delete_particles();
 
 	void update();
-	
-	void render();
+
+	void render() const;
 };
 

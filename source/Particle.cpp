@@ -1,100 +1,117 @@
 #include "Particle.h"
 
 //private functions
-void Particle::initShape(const sf::RenderWindow& window)
+void particle::init_shape(const sf::RenderWindow& window)
 {
-	this->shape.setRadius(10.f);
-	
+	this->shape_.setRadius(10.f);
+
+	//set dist
+	set_dist(0, 255);
 	//set random color
-	sf::Color color(rand() % 255 + 1, rand() % 255 + 1, rand() % 255 + 1);
-	this->shape.setFillColor(color);
+	const sf::Color color(this->dist_(this->mt_rand_), // random nums in range[0, 255] so no precision loss
+		this->dist_(this->mt_rand_), 
+		this->dist_(this->mt_rand_));
+	this->shape_.setFillColor(color);
 }
 
-void Particle::initVariables()
+void particle::init_variables()
 {
 	//set vx and vy initial values
-	this->vx = 0;
+	this->vx_ = 0;
 	
-	this->vy = 0;
+	this->vy_ = 0;
 
-	//set initial pos
-	this->xPos = 0;
-	
-	this->yPos = 0;
+	// x_dist random real nums in [0, 1920]
+	std::uniform_real_distribution<float> x_dist(1.f, 1920.f);
 
+	//set initial xpos
+	this->x_pos_ = x_dist(this->mt_rand_);
+
+	// y_dist random real nums in [0, 1080]
+	std::uniform_real_distribution<float> y_dist(1.f, 1080.f);
+
+	// set initial ypos
+	this->y_pos_ = y_dist(this->mt_rand_);
+
+	//set dist
+	set_dist(1, 1000);
 	//set random lifetime
-	this->lifeTime = rand() % 1000 + 1;
+	this->life_time_ = this->dist_(this->mt_rand_);
 }
 
 //constructor
-Particle::Particle(const sf::RenderWindow& window)
+particle::particle(const sf::RenderWindow& window)
 {	
-	this->initShape(window);
+	this->init_shape(window);
 
-	this->initVariables();
+	this->init_variables();
 }
 
 //Destructor
-Particle::~Particle()
+particle::~particle()
+= default;
+
+const sf::CircleShape& particle::get_shape() const
 {
+	return this->shape_;
 }
 
-const sf::CircleShape& Particle::getShape() const
+void particle::set_dist(const int min, const int max)
 {
-	return this->shape;
+	this->dist_ = std::uniform_int_distribution<int>(min, max);
 }
 
-void Particle::setXPos(int x)
+void particle::set_x_pos(const float x)
 {
-	this->xPos = x;
+	this->x_pos_ = x;
 }
 
-void Particle::setYPos(int y)
+void particle::set_y_pos(const float y)
 {
-	this->yPos = y;
+	this->y_pos_ = y;
 }
 
-void Particle::setVy(float vy)
+void particle::set_vy(const float vy)
 {
-	this->vy = vy;
+	this->vy_ = vy;
 }
 
-void Particle::setVx(float vx)
+void particle::set_vx(const float vx)
 {
-	this->vx = vx;
+	this->vx_ = vx;
 }
 
-void Particle::setPos()
+void particle::set_pos()
 {
-	this->shape.setPosition(this->xPos, this->yPos);
+	this->shape_.setPosition(this->x_pos_, this->y_pos_);
 }
 
-int Particle::getXPos() const
+float particle::get_x_pos() const
 {
-	return this->xPos;
+	return this->x_pos_;
 }
 
-int Particle::getYPos() const
+float particle::get_y_pos() const
 {
-	return this->yPos;
+	return this->y_pos_;
 }
 
 //public functions
-int Particle::getLifeTime() const
+int particle::get_life_time() const
 {
-	return this->lifeTime;
+	return this->life_time_;
 }
 
-void Particle::update()
+void particle::update()
 {
 	//decrement particle lifetime
-	--this->lifeTime;
+	this->life_time_--;
 
 	//update particle position
-	this->shape.move(this->vx, this->vy);
+	this->shape_.move(this->vx_, this->vy_);
 }
 
-void Particle::draw(sf::RenderTarget& target)
+void particle::draw(sf::RenderTarget& target) const
 {
-	target.draw(this->shape);
+	target.draw(this->shape_);
 }
