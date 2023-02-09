@@ -1,10 +1,20 @@
-# pixel-physics
-A very basic particle system using the SFML library.
+# Pixel-Physics
+A simple particle system implemented using the SFML library.
 
-To compile the program you need to link the SFML library,
-and place in your solution the following dll's:
-sfml-graphics-2.dll
-sfml-window-2.dll
-sfml-audio-2.dll
-sfml-system-2.dll
-sfml-network-2.dll
+## Features
+- Dynamic particle generation and movement
+- Particles interact with each other through collisions
+- Colorful, visually appealing display
+
+## Requirements
+To compile and run the program, you will need to:
+- Link the SFML library
+- Place the following DLLs in your solution:
+  - sfml-graphics-2.dll
+  - sfml-window-2.dll
+
+## Screenshot
+![background image](./screenshots/Pixel-Physics 09.02.2023 16_16_20.png)
+
+## Usage
+Clone the repository and run the program to see the particle system in action.
