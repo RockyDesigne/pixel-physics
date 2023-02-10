@@ -9,7 +9,7 @@ A simple particle system implemented using the SFML library.
 ## Requirements
 To compile and run the program, you will need to:
 - Link the SFML library
-- Place the following DLLs in your solution:
+- Place the following DLLs in your solution(if you link dynamically):
   - sfml-graphics-2.dll
   - sfml-window-2.dll
 
